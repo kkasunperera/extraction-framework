@@ -20,7 +20,8 @@ class OntologyProperty(
   val domain: OntologyClass,
   val range: OntologyType,
   val isFunctional: Boolean,
-  val equivalentProperties: Set[OntologyProperty]
+  val equivalentProperties: Set[OntologyProperty],
+  val symmetricObjectProperties : Set[OntologyProperty]
 )
 extends OntologyEntity(name, labels, comments)
 {

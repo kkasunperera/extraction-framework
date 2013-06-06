@@ -114,7 +114,7 @@ class OntologyWriter
             if(property.domain.name != "owl:Thing") writer.write("\n| rdfs:domain = " + property.domain.name)
             if(property.range.name != "owl:Thing") writer.write("\n| rdfs:range = " + property.range.name)
             if(property.isFunctional) writer.write("\n| rdf:type = owl:FunctionalProperty")
-
+            if (property.symmetricObjectProperties != null) writer.write("\n| owl:SymmetricProperty = " + property.symmetricObjectProperties.map(_.name).mkString(","))
             writer.write("\n}}")
 
         }

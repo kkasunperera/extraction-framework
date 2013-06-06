@@ -163,6 +163,12 @@ class OntologyOWLWriter(writeSpecificProperties : Boolean = true)
             xml += <owl:equivalentProperty rdf:resource={prop.uri} />
         }
 
+        //Symmetric Properties
+        for(prop <- property.symmetricObjectProperties)
+        {
+          xml += <owl:SymmetricProperty rdf:resource={prop.uri} />
+        }
+
         //Return xml
         property match
         {
