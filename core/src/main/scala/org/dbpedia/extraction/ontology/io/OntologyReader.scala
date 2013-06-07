@@ -40,9 +40,9 @@ class OntologyReader
         ontologyBuilder.classes ::= new ClassBuilder("rdf:Property", Map(Language.Mappings -> "Property"), Map(), List("owl:Thing"), Set(), Set(),Set())
 
         // TODO: range should be rdfs:Class
-        ontologyBuilder.properties ::= new PropertyBuilder("rdf:type", Map(Language.Mappings -> "has type"), Map(), true, false, "owl:Thing", "owl:Thing", Set(),Set())
-        ontologyBuilder.properties ::= new PropertyBuilder("rdfs:label", Map(Language.Mappings -> "has label"), Map(), false, false, "owl:Thing", "xsd:string", Set(),Set())
-        ontologyBuilder.properties ::= new PropertyBuilder("rdfs:comment", Map(Language.Mappings -> "has comment"), Map(), false, false, "owl:Thing", "xsd:string", Set(),Set())
+        ontologyBuilder.properties ::= new PropertyBuilder("rdf:type", Map(Language.Mappings -> "has type"), Map(), true, false, "owl:Thing", "owl:Thing", Set(),Set(),Set(),Set(),Set(),Set())
+        ontologyBuilder.properties ::= new PropertyBuilder("rdfs:label", Map(Language.Mappings -> "has label"), Map(), false, false, "owl:Thing", "xsd:string", Set(),Set(),Set(),Set(),Set(),Set())
+        ontologyBuilder.properties ::= new PropertyBuilder("rdfs:comment", Map(Language.Mappings -> "has comment"), Map(), false, false, "owl:Thing", "xsd:string", Set(),Set(),Set(),Set(),Set(),Set())
 
         for(page <- pageNodeSource)
         {
@@ -165,9 +165,18 @@ class OntologyReader
 
         //Equivalent Properties
         val equivProperties = readTemplatePropertyAsList(node, "owl:equivalentProperty").toSet
+        //Symmetric Properties
         val symtricProperties = readTemplatePropertyAsList(node, "owl:SymmetricProperty").toSet
+        //inverse functional properties
+        val inverseFuncPropperties = readTemplatePropertyAsList(node, "owl:InverseFunctionalProperty").toSet
+        //reflexive properties
+        val reflexiveProperties = readTemplatePropertyAsList(node,"owl:ReflexiveProperty").toSet
+        //irreflexive properties
+        val irreflexiveProperties = readTemplatePropertyAsList(node,"owl:IrreflexiveProperty").toSet
+        //disjoint properties
+        val disjointProperties = readTemplatePropertyAsList(node,"owl:propertyDisjointWith").toSet
 
-        Some(new PropertyBuilder(name, labels, comments, isObjectProperty, isFunctional, domain, range, equivProperties,symtricProperties))
+        Some(new PropertyBuilder(name, labels, comments, isObjectProperty, isFunctional, domain, range, equivProperties,symtricProperties,inverseFuncPropperties,irreflexiveProperties,irreflexiveProperties,disjointProperties))
     }
 
     private def loadSpecificProperties(name : String, node : TemplateNode) : List[SpecificPropertyBuilder] =
@@ -411,7 +420,9 @@ class OntologyReader
 
     private class PropertyBuilder(val name : String, val labels : Map[Language, String], val comments : Map[Language, String],
                                   val isObjectProperty : Boolean, val isFunctional : Boolean, val domain : String, val range : String,
-                                  val equivPropertyNames : Set[String],val symtriPropertyNames : Set[String])
+                                  val equivPropertyNames : Set[String],val symtriPropertyNames : Set[String],
+                                  val inverFuncProperNames : Set[String], val reflexPropertyNames : Set[String],
+                                  val irreflexPropertyNames : Set[String], val disjoPropertyNames : Set[String])
     {
         require(name != null, "name != null")
         require(labels != null, "labels != null")
@@ -420,6 +431,10 @@ class OntologyReader
         require(range != null, "range != null")
         require(equivPropertyNames != null, "equivPropertyNames != null")
         require(symtriPropertyNames !=null, "symtriPropertyNames != null")
+        require(inverFuncProperNames != null,"inverFuncProperNames != null")
+        require(reflexPropertyNames != null,"reflexPropertyNames != null")
+        require(irreflexPropertyNames != null, "irreflexPropertyNames != null")
+        require(disjoPropertyNames != null, "disjoPropertyNames != null")
 
         /** Caches the property, which has been build by this builder. */
         var generatedProperty : Option[OntologyProperty] = None
@@ -446,14 +461,42 @@ class OntologyReader
             for (name <- equivPropertyNames) {
               // FIXME: handle equivalent properties in namespaces that we validate
               if (RdfNamespace.validate(name)) logger.warning("Cannot use equivalent property '"+name+"'")
-              else equivProperties += new OntologyProperty(name, Map(), Map(), null, null, false, Set(),Set())
+              else equivProperties += new OntologyProperty(name, Map(), Map(), null, null, false, Set(),Set(),Set(),Set(),Set(),Set())
             }
 
             var symmtricProperties = Set.empty[OntologyProperty]
             for (name <- symtriPropertyNames) {
-              // FIXME: handle symmetric properties in namespaces that we validate
+              // FIXME: handle symmetric properties in namespaces that we validate ???
               if (RdfNamespace.validate(name)) logger.warning("Cannot use symmetric property '"+name+"'")
-              else symmtricProperties += new OntologyProperty(name, Map(), Map(), null, null, false, Set(),Set())
+              else symmtricProperties += new OntologyProperty(name, Map(), Map(), null, null, false, Set(),Set(),Set(),Set(),Set(),Set())
+            }
+
+            var inverFuncProperties = Set.empty[OntologyProperty]
+            for (name <- inverFuncProperNames) {
+              // FIXME: handle inverse functional properties in namespaces that we validate ???
+              if (RdfNamespace.validate(name)) logger.warning("Cannot use inverse functional property '"+name+"'")
+              else inverFuncProperties += new OntologyProperty(name, Map(), Map(), null, null, false, Set(),Set(),Set(),Set(),Set(),Set())
+            }
+
+            var reflexiveProperties = Set.empty[OntologyProperty]
+            for (name <- reflexPropertyNames) {
+              // FIXME: handle reflexive properties in namespaces that we validate???
+              if (RdfNamespace.validate(name)) logger.warning("Cannot use reflexive property '"+name+"'")
+              else reflexiveProperties += new OntologyProperty(name, Map(), Map(), null, null, false, Set(),Set(),Set(),Set(),Set(),Set())
+            }
+
+            var irreflexiveProperties = Set.empty[OntologyProperty]
+            for (name <- irreflexPropertyNames) {
+              // FIXME: handle irreflexive properties in namespaces that we validate???
+              if (RdfNamespace.validate(name)) logger.warning("Cannot use irreflexive property '"+name+"'")
+              else irreflexiveProperties += new OntologyProperty(name, Map(), Map(), null, null, false, Set(),Set(),Set(),Set(),Set(),Set())
+            }
+
+            var disjointProperties = Set.empty[OntologyProperty]
+            for (name <- disjoPropertyNames) {
+              // FIXME: handle disjoint properties in namespaces that we validate???
+              if (RdfNamespace.validate(name)) logger.warning("Cannot use disjoint property '"+name+"'")
+              else disjointProperties += new OntologyProperty(name, Map(), Map(), null, null, false, Set(),Set(),Set(),Set(),Set(),Set())
             }
 
             if(isObjectProperty)
@@ -474,7 +517,7 @@ class OntologyReader
                     case None => logger.warning("range '"+range+"' of property '"+name+"' not found"); return None
                 }
 
-                generatedProperty = Some(new OntologyObjectProperty(name, labels, comments, domainClass, rangeClass, isFunctional, equivProperties, symmtricProperties))
+                generatedProperty = Some(new OntologyObjectProperty(name, labels, comments, domainClass, rangeClass, isFunctional, equivProperties, symmtricProperties,inverFuncProperties,reflexiveProperties,irreflexiveProperties,disjointProperties ))
             }
             else
             {
@@ -484,7 +527,7 @@ class OntologyReader
                     case None => logger.warning("range '"+range+"' of property '"+name+"' not found"); return None
                 }
 
-                generatedProperty = Some(new OntologyDatatypeProperty(name, labels, comments, domainClass, rangeType, isFunctional, equivProperties,symmtricProperties))
+                generatedProperty = Some(new OntologyDatatypeProperty(name, labels, comments, domainClass, rangeType, isFunctional, equivProperties,symmtricProperties,inverFuncProperties,reflexiveProperties,irreflexiveProperties,disjointProperties))
             }
 
             generatedProperty

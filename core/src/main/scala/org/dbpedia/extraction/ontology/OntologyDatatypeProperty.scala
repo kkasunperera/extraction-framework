@@ -16,5 +16,10 @@ import org.dbpedia.extraction.util.Language
  */
 class OntologyDatatypeProperty(name : String, labels : Map[Language, String], comments : Map[Language, String],
                                domain : OntologyClass, override val range : Datatype, isFunctional : Boolean = false,
-                               equivalentProperties : Set[OntologyProperty] = Set(),symmetricObjectProperties : Set[OntologyProperty]=Set())
-    extends OntologyProperty(name, labels, comments, domain, range, isFunctional, equivalentProperties,symmetricObjectProperties)
+                               equivalentProperties : Set[OntologyProperty] = Set(),symmetricObjectProperties : Set[OntologyProperty]=Set(),
+                               inverseFunctionalObjectProperties : Set[OntologyProperty]= Set(), reflexiveObjectProperties : Set[OntologyProperty]= Set(),
+                               irreflexiveObjectProperty : Set[OntologyProperty]=Set(), disjointObjectProperties : Set[OntologyProperty]=Set())
+
+    extends OntologyProperty(name, labels, comments, domain, range, isFunctional, equivalentProperties,symmetricObjectProperties,
+                              inverseFunctionalObjectProperties, reflexiveObjectProperties,irreflexiveObjectProperty,
+                             disjointObjectProperties)

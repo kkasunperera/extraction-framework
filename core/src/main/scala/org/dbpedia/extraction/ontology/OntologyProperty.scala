@@ -21,13 +21,22 @@ class OntologyProperty(
   val range: OntologyType,
   val isFunctional: Boolean,
   val equivalentProperties: Set[OntologyProperty],
-  val symmetricObjectProperties : Set[OntologyProperty]
+  val symmetricObjectProperties : Set[OntologyProperty],
+  val inverseFunctionalObjectProperties : Set[OntologyProperty],
+  val reflexiveObjectProperties : Set[OntologyProperty],
+  val irreflexiveObjectProperty : Set[OntologyProperty],
+  val disjointObjectProperties : Set[OntologyProperty]
 )
 extends OntologyEntity(name, labels, comments)
 {
     require(! RdfNamespace.validate(name) || domain != null, "missing domain for property "+name)
     require(! RdfNamespace.validate(name) || range != null, "missing range for property "+name)
     require(equivalentProperties != null, "missing equivalent properties for property "+name)
+    require(symmetricObjectProperties != null,"missing symmetric properties for property "+name)
+    require(inverseFunctionalObjectProperties !=null,"missing inverse functional properties for property "+name)
+    require(reflexiveObjectProperties !=null,"missing reflexsive properties for property"+ name)
+    require(irreflexiveObjectProperty !=null,"missing irreflexive properties for property"+ name)
+    require(disjointObjectProperties !=null,"missing disjoint properties for property"+ name)
     
     val uri = RdfNamespace.fullUri(DBpediaNamespace.ONTOLOGY, name)
 

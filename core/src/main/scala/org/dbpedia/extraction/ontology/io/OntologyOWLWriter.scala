@@ -169,6 +169,30 @@ class OntologyOWLWriter(writeSpecificProperties : Boolean = true)
           xml += <owl:SymmetricProperty rdf:resource={prop.uri} />
         }
 
+        //inverse functional properties
+        for (prop <- property.inverseFunctionalObjectProperties)
+        {
+        xml += <owl:InverseFunctionalProperty rdf:resource={prop.uri} />
+        }
+
+        //reflexive properties
+        for (prop <- property.reflexiveObjectProperties)
+        {
+        xml += <owl:ReflexiveProperty rdf:resource={prop.uri} />
+        }
+
+        //irreflexive properties
+        for (prop <- property.irreflexiveObjectProperty)
+        {
+        xml += <owl:IrreflexiveProperty rdf:resource={prop.uri} />
+        }
+
+        //disjoint properties
+        for (prop <- property.disjointObjectProperties)
+        {
+        xml += <owl:propertyDisjointWith rdf:resource={prop.uri} />
+        }
+
         //Return xml
         property match
         {
