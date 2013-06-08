@@ -82,12 +82,6 @@ class OntologyOWLWriter(writeSpecificProperties : Boolean = true)
           xml += <owl:disjointWith rdf:resource={disjointWithClass.uri}/>
         }
 
-        //equivalentProperty classes
-        for(equivalentObjectPropertyClass <- ontologyClass.equivalentObjectPropertyClasses)
-        {
-          xml += <owl:equivalentProperty rdf:resource={equivalentObjectPropertyClass.uri}/>
-        }
-
         <owl:Class rdf:about={ontologyClass.uri}>
         {xml}
         </owl:Class>

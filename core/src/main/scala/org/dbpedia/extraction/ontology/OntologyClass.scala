@@ -19,8 +19,7 @@ class OntologyClass(
   comments : Map[Language, String],
   val baseClasses : List/*TODO:ListSet?*/[OntologyClass], 
   val equivalentClasses : Set[OntologyClass],
-  val disjointWithClasses : Set[OntologyClass],
-  val equivalentObjectPropertyClasses : Set[OntologyClass]  //EquivalentObjectProperties class
+  val disjointWithClasses : Set[OntologyClass]
 )
 extends OntologyType(name, labels, comments)
 {
@@ -28,7 +27,6 @@ extends OntologyType(name, labels, comments)
     require(baseClasses.nonEmpty || name == "owl:Thing" || ! RdfNamespace.validate(name), "missing base classes for class "+name+", although this class is not the root and it should be validated")
     require(equivalentClasses != null, "missing equivalent classes for class "+name)
     require(disjointWithClasses != null, "missing disjointWith classes for class "+name)
-    require(equivalentObjectPropertyClasses != null, "missing equivalentProperty classes for class "+name)
 
 
     /**
