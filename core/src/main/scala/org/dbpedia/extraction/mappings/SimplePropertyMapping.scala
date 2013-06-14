@@ -154,7 +154,7 @@ extends PropertyMapping
 
         for(propertyNode <- node.property(templateProperty) if propertyNode.children.size > 0)
         {
-            val parseResults = parser.parsePropertyNode(propertyNode, !ontologyProperty.isFunctional)
+            val parseResults = parser.parsePropertyNode(propertyNode, !ontologyProperty.isFunctional(node))
 
             for( parseResult <- selector(parseResults) )
             {

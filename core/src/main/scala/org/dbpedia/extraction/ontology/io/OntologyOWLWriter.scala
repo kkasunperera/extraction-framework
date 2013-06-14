@@ -92,11 +92,12 @@ class OntologyOWLWriter(writeSpecificProperties : Boolean = true)
         val xml = new scala.xml.NodeBuffer()
 
         //Type
+      /*
         if (property.isFunctional)
         {
              xml += <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty" />
         }
-
+       */
         //Labels
         val labelPostfix = property.range match
         {
@@ -157,36 +158,19 @@ class OntologyOWLWriter(writeSpecificProperties : Boolean = true)
             xml += <owl:equivalentProperty rdf:resource={prop.uri} />
         }
 
-        //Symmetric Properties
-        for(prop <- property.symmetricObjectProperties)
-        {
-          xml += <owl:SymmetricProperty rdf:resource={prop.uri} />
-        }
-
-        //inverse functional properties
-        for (prop <- property.inverseFunctionalObjectProperties)
-        {
-        xml += <owl:InverseFunctionalProperty rdf:resource={prop.uri} />
-        }
-
-        //reflexive properties
-        for (prop <- property.reflexiveObjectProperties)
-        {
-        xml += <owl:ReflexiveProperty rdf:resource={prop.uri} />
-        }
-
-        //irreflexive properties
-        for (prop <- property.irreflexiveObjectProperty)
-        {
-        xml += <owl:IrreflexiveProperty rdf:resource={prop.uri} />
-        }
-
         //disjoint properties
-        for (prop <- property.disjointObjectProperties)
+        for (prop <- property.disjointWithProperties)
         {
         xml += <owl:propertyDisjointWith rdf:resource={prop.uri} />
         }
 
+        //rdf types-(functional,InverseFunctional, symmetric, reflexive, Irreflexive)
+
+        for (prop <- property.rdfTypes)
+        {
+          xml += <rdf:type rdf:resource={prop.uri} />
+
+        }
         //Return xml
         property match
         {
